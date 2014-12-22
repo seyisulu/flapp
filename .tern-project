@@ -1,0 +1,1 @@
+{"ide":{},"plugins":{"angular":{},"ckeditor_4.4.1":{},"cordovajs":{},"grunt":{},"lint":{"rules":{"UnknownProperty":{"severity":"warning"},"UnknownIdentifier":{"severity":"warning"},"NotAFunction":{"severity":"error"},"InvalidArgument":{"severity":"error"},"UnusedVariable":{"severity":"warning"}}},"meteor":{},"node":{},"node-express":{}},"libs":["browser","ecma5","jquery"]}
