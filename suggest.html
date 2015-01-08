@@ -1,0 +1,44 @@
+<div ui-content-for="title">
+  <span>Suggest </span>
+</div>
+
+<div class="scrollable">
+ <div class="scrollable-content section">
+   
+  <form role="form" ng-submit='login()'>
+    <fieldset>
+      <legend>New Food Item</legend>
+        <div class="form-group has-success has-feedback">
+          <label>Name</label>
+          <input type="text"
+                 ng-model="foodname"
+                 class="form-control"
+                 placeholder="Enter name of food">
+        </div>
+
+        <div class="form-group">
+          <label>Modifier</label>
+          <input type="text" 
+                 class="form-control"
+                 placeholder="Modifier">
+        </div>
+
+        <div class="form-group">
+          <label>Remember Me</label>
+          <ui-switch 
+            ng-model='rememberMe'></ui-switch>
+        </div>
+    </fieldset>
+    <hr>
+
+    <button class="btn btn-primary btn-block">
+      Login
+    </button>
+
+    <div ui-content-for="navbarAction">
+      <a class='btn' ng-click='login()'>Login</a>
+    </div>
+
+  </form>
+ </div>
+</div>
