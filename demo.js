@@ -1,13 +1,7 @@
-angular.module('app.config')
-  .value('app.config', {
-    basePath: '/api/v1/'
-  });
 var app = angular.module('Flapp', [
   'ngRoute',
   'mobile-angular-ui',
-  'ngProgress',
-  'app.config',
-  
+  'ngProgress',  
   // touch/drag feature: this is from 'mobile-angular-ui.gestures.js'
   // to integrate gestures into default ui interactions like 
   // opening sidebars, turning switches on/off ..
@@ -24,6 +18,10 @@ app.config(function($routeProvider) {
   $routeProvider.when('/random',      {templateUrl: 'random.html', reloadOnSearch: false});
   $routeProvider.when('/suggest',     {templateUrl: 'suggest.html', reloadOnSearch: false});
 });
+
+app.value('config', {
+    basePath: '/api/v1/'
+  });
 
 app.run(function($rootScope, ngProgress) {
   $rootScope.$on('$routeChangeStart', function() {
@@ -96,11 +94,11 @@ app.controller('MainController', function($rootScope, $scope){
   };
 });
 
-app.factory('foodSvc', ['$http', '$rootScope', 'app.config', '$q', function ($http, $rootScope, config, $q) {
+app.factory('foodSvc', ['$http', '$rootScope', 'config', '$q', function ($http, $rootScope, config, $q) {
 	return {
         foods: function (id) {
         	var deferred = $q.defer();
-        	$http({method: 'JSONP', url: config.basePath + 'foods?callback=JSON_CALLBACK', cache: true}).
+        	$http({method: 'GET', url: config.basePath + 'foods?callback=JSON_CALLBACK', cache: true}).
             	success(function (data, status, headers, config) {
             		deferred.resolve(data);
             	}).
@@ -111,7 +109,7 @@ app.factory('foodSvc', ['$http', '$rootScope', 'app.config', '$q', function ($ht
         },
         modifiers: function (id) {
         	var deferred = $q.defer();
-        	$http({method: 'JSONP', url: config.basePath + 'modifiers?callback=JSON_CALLBACK', cache: true}).
+        	$http({method: 'GET', url: config.basePath + 'modifiers?callback=JSON_CALLBACK', cache: true}).
             	success(function (data, status, headers, config) {
             		deferred.resolve(data);
             	}).
@@ -133,7 +131,7 @@ app.factory('foodSvc', ['$http', '$rootScope', 'app.config', '$q', function ($ht
         },
         saveAnswerAsync: function (point,data) {
             var deferred = $q.defer();
-        	$http({method: 'JSONP', url: point, cache: false, data: data}).
+        	$http({method: 'GET', url: point, cache: false, data: data}).
             	success(function (data, status, headers, config) {
             		deferred.resolve(data);
             	}).
