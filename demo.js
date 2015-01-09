@@ -1,5 +1,6 @@
 var app = angular.module('Flapp', [
   'ngRoute',
+  'ngResource',
   'mobile-angular-ui',
   'ngProgress',  
   // touch/drag feature: this is from 'mobile-angular-ui.gestures.js'
@@ -95,12 +96,31 @@ app.controller('MainController', function($rootScope, $scope){
 });
 
 app.factory('foodSvc', ['$http', '$rootScope', 'config', '$q', function ($http, $rootScope, config, $q) {
+	var cache = { 'foods':$cacheFactory('food'), 'mods':$cacheFactory('mod'), 'combos':$cacheFactory('combo') };
 	return {
-        foods: function (id) {
+		food: function (id) {
+        	var deferred = $q.defer();
+        	$http({method: 'GET', url: config.basePath + 'food/'+id, cache: true}).
+            	success(function (data, status, headers, config) {
+            		deferred.resolve(data);
+            	}).
+            	error(function(data, status, headers, config) {
+            		deferred.reject({status:400,payload:{}});
+            	});
+            return deferred.promise;
+        },
+        foods: function () {
         	var deferred = $q.defer();
         	$http({method: 'GET', url: config.basePath + 'foods?callback=JSON_CALLBACK', cache: true}).
             	success(function (data, status, headers, config) {
-            		deferred.resolve(data);
+            		if(data.payload.length>0){
+            			cache.foods.removeAll();
+	            		var index, len;
+						for (index = 0, len = data.payload.length; index < len; ++index) {
+						    cache.foods.put(data.payload[index].id,data.payload[index]);
+						}            			
+            		}
+            		deferred.resolve(data.payload);
             	}).
             	error(function(data, status, headers, config) {
             		deferred.reject({status:400,payload:[]});
