@@ -3,16 +3,17 @@
 
     <div class="list-group text-center">
       <div class="list-group-item list-group-item-home">
-        <h1>Food Combo <small>{{userAgent}}</small>
+        <h1>Food Combo <small>0.1</small>
         </h1>
       </div>
       <div class="list-group-item list-group-item-home media">
         <div class="media-body">
             <h3 class="media-heading">Welcome</h3>
-            <p>You can start by clicking the button below and on the next screen, select food combinations you think can go together - along with appropraite processing - and click on add to save it.</p>
+            <p>You can start by clicking the button below and on the next screen, select food combinations you think can go together - along with appropraite modifications - and click on add to save it.</p>
             
             <p>If you do not find a particular food item you would like to add amongst the randomly selected food items, you may add it from the larger list by clicking add. Also, you may request for the inclusion of a new food item.</p>
-            <button class="btn btn-block btn-lg">
+            
+            <button class="btn btn-block btn-lg" ng-click="startApp()">
               <i class="fa fa-arrow-right feature-icon text-primary"></i><br>Start
             </button>
         </div>

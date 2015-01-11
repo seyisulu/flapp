@@ -2088,3 +2088,139 @@
 	    X::db()->rollBack();
 	    X::r(['status'=>400,'payload'=>$ex->getMessage()]);
 	}
+
+2:1,29:1,55:1
+
+P@$w0rd
+P@$wOrd
+
+<p><strong>ID:</strong> {{mod.id}}, <strong>name:</strong> {{mod.name}}</p>
+
+ have problems as well with setting custom http authentication because $resource cache the request.
+
+To make it work you have to overwrite the existing headers by doing this
+
+                    var transformRequest = function(data, headersGetter){
+                       var headers = headersGetter();
+                       headers['Authorization'] = 'WSSE profile="UsernameToken"';
+                       headers['X-WSSE'] = 'UsernameToken ' + nonce
+                       headers['Content-Type'] = 'application/json';
+                    };
+
+                    return $resource(
+                        url,
+                        {
+                        },
+                        {
+                            query: {
+                                method: 'POST',
+                                url: apiURL + '/profile',
+                                transformRequest: transformRequest,
+                                params: {userId: '@userId'}
+                            },
+
+                        }
+                    );
+
+
+
+
+    <p ui-state id='lightbulb'
+        ui-class="{'text-primary': lightbulb}" 
+           class="text-default">
+
+      <i class="fa fa-lightbulb-o"></i>
+    </p>
+
+    <div class="btn-group justified nav-tabs">
+      <a  
+         ui-toggle='lightbulb'
+         ui-class="{'active': lightbulb}" 
+         class="btn btn-default" href>
+          Toggle
+      </a>
+      <a  
+         ui-turn-on='lightbulb'
+         ui-class="{'active': lightbulb}" 
+         class="btn btn-default" href>
+          Turn On
+      </a>
+      <a  
+         ui-turn-off='lightbulb'
+         ui-class="{'active': !lightbulb}"
+         class="btn btn-default" href>
+          Turn Off
+      </a>       
+    </div>
+
+    <hr>
+
+    <h5>ExclusionGroup example</h5>
+
+    <div class="btn-group">
+      <a href class="btn btn-default" ui-turn-on='button1' ui-state='button1' ui-class="{'active': button1}" ui-exclusion-group='myButtons'>1</a>
+      <a href class="btn btn-default" ui-turn-on='button2' ui-state='button2' ui-class="{'active': button2}" ui-exclusion-group='myButtons'>2</a>
+      <a href class="btn btn-default" ui-turn-on='button3' ui-state='button3' ui-class="{'active': button3}" ui-exclusion-group='myButtons'>3</a>
+    </div>
+
+
+
+
+
+
+Try turning customer into an object:
+
+angular.module("app").factory("SaveCustomer", ["$resource", 
+    function($resource){
+        return $resource("/services/customers/post/", 
+            {
+                customer: { 
+                    customer_name: '@name',
+                    customer_code:'@code',
+                    customer_is_visible:'@visibility'
+                },
+                dtsave:'true'
+            },
+            {
+                save: {
+                    method:'POST'
+                }
+            }
+        );
+    }
+]);
+
+
+
+
+
+
+
+      <div class="panel panel-default masonry-brick" ng-repeat="food in foods">
+        <div class="panel-heading">
+          <div class="btn-group pull-right">
+            <a ui-turn-on='myDropdown' class='btn'>
+              <i class="fa fa-ellipsis-v"></i>
+            </a>
+            <ul 
+              class="dropdown-menu"
+              ui-outer-click="Ui.turnOff('myDropdown')"
+              ui-outer-click-if="Ui.active('myDropdown')"
+              role="menu"
+              ui-show="myDropdown" 
+              ui-state="myDropdown"
+              ui-turn-off="myDropdown">
+
+              <li><a>Action</a></li>
+              <li><a>Another action</a></li>
+              <li><a>Something else here</a></li>
+              <li class="divider"></li>
+              <li><a>Separated link</a></li>
+            </ul>
+          </div>
+          <h3 class="panel-title capitalize">{{food.name}}</h3>
+        </div>
+        <div class="panel-body capitalize">
+           {{food.name}}
+        </div>
+      </div>

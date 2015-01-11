@@ -1,8 +1,10 @@
 var app = angular.module('Flapp', [
+  'ng',
   'ngRoute',
   'ngResource',
   'mobile-angular-ui',
-  'ngProgress',  
+  'ngProgress',
+  'akoenig.deckgrid',
   // touch/drag feature: this is from 'mobile-angular-ui.gestures.js'
   // to integrate gestures into default ui interactions like 
   // opening sidebars, turning switches on/off ..
@@ -14,11 +16,23 @@ var app = angular.module('Flapp', [
 // feature (i.e. close sidebar on backbutton) you should setup 'reloadOnSearch: false' 
 // in order to avoid unwanted routing.
 // 
-app.config(function($routeProvider) {
+app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
   $routeProvider.when('/',            {templateUrl: 'home.html', reloadOnSearch: false});  
   $routeProvider.when('/random',      {templateUrl: 'random.html', reloadOnSearch: false});
   $routeProvider.when('/suggest',     {templateUrl: 'suggest.html', reloadOnSearch: false});
-});
+  /*
+  $httpProvider.defaults.transformRequest = function(data){
+        if (data === undefined) {
+            return data;
+        }
+        return $.param(data, false);
+   };
+   $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+   */   
+}]);
+// Prevent sending of JSON to server using jQuery's param format
+// Set the Content-Type header globally
+
 
 app.value('config', {
     basePath: '/api/v1/'
@@ -39,53 +53,30 @@ app.run(function($rootScope, ngProgress) {
   });
 });
 
-app.controller('MainController', function($rootScope, $scope){
-
+app.controller('MainController', ['$rootScope','$scope','dataBank',function($rootScope, $scope, dataBank){
   // User agent displayed in home page
   $scope.userAgent = navigator.userAgent;
-  
-  // Needed for the loading screen
-  $rootScope.$on('$routeChangeStart', function(){
-    $rootScope.loading = true;
-  });
-
-  $rootScope.$on('$routeChangeSuccess', function(){
-    $rootScope.loading = false;
-  });
-
-  // 
-  // 'Scroll' screen
-  // 
-  var scrollItems = [];
-
-  for (var i=1; i<=100; i++) {
-    scrollItems.push('Item ' + i);
-  }
-
-  $scope.scrollItems = scrollItems;
-
-  $scope.bottomReached = function() {
-    alert('Congrats you scrolled to the end of the list!');
-  }
-
+  $scope.combos = dataBank.Combo.query();
+  $scope.foods = dataBank.Food.query();
+  $scope.mods = dataBank.Mod.query();
+  $scope.modx = dataBank.Mod.query();
+    $scope.md = new dataBank.Mod({name:' Deep Fried'});
+    $scope.md.$save();
+  $scope.saveMod = function() {
+    $scope.md = new dataBank.Mod({name:' Deep Fried'});
+    $scope.md.$save();
+  };
+  $scope.startApp = function() {
+    window.location.hash='/random';
+  };
   //
   // 'Forms' screen
   //  
   $scope.rememberMe = true;
-  $scope.email = 'me@example.com';
-  
+  $scope.email = 'me@example.com';  
   $scope.login = function() {
     alert('You submitted the login form');
   };
-
-  // 
-  // 'Drag' screen
-  // 
-  $scope.notices = [];
-  
-  for (var j = 0; j < 10; j++) {
-    $scope.notices.push({icon: 'envelope', message: 'Notice ' + (j + 1) });
-  }
 
   $scope.deleteNotice = function(notice) {
     var index = $scope.notices.indexOf(notice);
@@ -93,72 +84,29 @@ app.controller('MainController', function($rootScope, $scope){
       $scope.notices.splice(index, 1);
     }
   };
-});
-
-app.factory('foodSvc', ['$http', '$rootScope', 'config', '$q', function ($http, $rootScope, config, $q) {
-	var cache = { 'foods':$cacheFactory('food'), 'mods':$cacheFactory('mod'), 'combos':$cacheFactory('combo') };
+}]);
+//{ 'get':{method:'GET'},'save':{method:'POST'},'query':{method:'GET', isArray:true},'remove':{method:'DELETE'},'delete':{method:'DELETE'} };
+app.factory('dataBank', ['$cacheFactory', '$resource', '$rootScope', 'config', '$q', function ($cacheFactory, $resource, $rootScope, config, $q) {
+	//var Food = { 'foods':$cacheFactory('food'), 'mods':$cacheFactory('mod'), 'combos':$cacheFactory('combo') };
 	return {
-		food: function (id) {
-        	var deferred = $q.defer();
-        	$http({method: 'GET', url: config.basePath + 'food/'+id, cache: true}).
-            	success(function (data, status, headers, config) {
-            		deferred.resolve(data);
-            	}).
-            	error(function(data, status, headers, config) {
-            		deferred.reject({status:400,payload:{}});
-            	});
-            return deferred.promise;
-        },
-        foods: function () {
-        	var deferred = $q.defer();
-        	$http({method: 'GET', url: config.basePath + 'foods?callback=JSON_CALLBACK', cache: true}).
-            	success(function (data, status, headers, config) {
-            		if(data.payload.length>0){
-            			cache.foods.removeAll();
-	            		var index, len;
-						for (index = 0, len = data.payload.length; index < len; ++index) {
-						    cache.foods.put(data.payload[index].id,data.payload[index]);
-						}            			
-            		}
-            		deferred.resolve(data.payload);
-            	}).
-            	error(function(data, status, headers, config) {
-            		deferred.reject({status:400,payload:[]});
-            	});
-            return deferred.promise;
-        },
-        modifiers: function (id) {
-        	var deferred = $q.defer();
-        	$http({method: 'GET', url: config.basePath + 'modifiers?callback=JSON_CALLBACK', cache: true}).
-            	success(function (data, status, headers, config) {
-            		deferred.resolve(data);
-            	}).
-            	error(function(data, status, headers, config) {
-            		deferred.reject({status:400,payload:[]});
-            	});
-            return deferred.promise;
-        },
-        getr: function (url) {
-        	var deferred = $q.defer();
-        	$http({method: 'GET', url: url, cache: true}).
-            	success(function (data, status, headers, config) {
-            		deferred.resolve(data);
-            	}).
-            	error(function(data, status, headers, config) {
-            		deferred.reject({question:{},answers:[]});
-            	});
-            return deferred.promise;
-        },
-        saveAnswerAsync: function (point,data) {
-            var deferred = $q.defer();
-        	$http({method: 'GET', url: point, cache: false, data: data}).
-            	success(function (data, status, headers, config) {
-            		deferred.resolve(data);
-            	}).
-            	error(function(data, status, headers, config) {
-            		deferred.reject({status:500,payload:{}});
-            	});
-            return deferred.promise;
-        }
+		Combo: $resource(config.basePath + 'combo/:comboId', {comboId:'@id'},
+		{
+			get: { method:'GET', cache: $cacheFactory },
+			food: { method:'GET', cache: $cacheFactory, params:{food:'food'} },
+        	query: { method:'GET', cache: $cacheFactory, isArray:true },
+        	save: { method:'POST' }
+		}),
+		Food: $resource(config.basePath + 'food/:foodId', {foodId:'@id'},
+		{
+			get: { method:'GET', cache: $cacheFactory },
+        	query: { method:'GET', cache: $cacheFactory, isArray:true },
+        	save: { method:'POST' }
+		}),
+		Mod: $resource(config.basePath + 'mod/:modId', {modId:'@id'},
+		{
+			get: { method:'GET', cache: $cacheFactory },
+        	query: { method:'GET', cache: $cacheFactory, isArray:true },
+        	save: { method:'POST' }
+		})
     };
 }]);
