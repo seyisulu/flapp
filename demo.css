@@ -200,70 +200,9 @@ input.scrollable-header {
 	text-transform: capitalize!important;
 }
 
-/*********************************************************************************/
-/* DeckGrid CSS                                                                  */
-/*********************************************************************************/
-
-.deckgrid[deckgrid]::before {
-    /* Specifies that the grid should have a maximum of 4 columns. Each column will have the classes 'column' and 'column-1-4' */
-    content: '5 .column.column-1-5';
-    font-size: 0; /* See https://github.com/akoenig/angular-deckgrid/issues/14#issuecomment-35728861 */
-    visibility: hidden;
+.bluish {
+	color: #007aff!important;
 }
-
-.deckgrid .column {
-    float: left;
-}
-
-.deckgrid .column-1-5 {
-    width: 17%;
-    margin-right:2%;
-}
-
-@media screen and (max-width: 1280px){
-    .deckgrid[deckgrid]::before {
-        content: '4 .column.column-1-4';
-    }
-
-    .deckgrid .column-1-4 {
-        width: 22%;
-    	margin-right:2%;
-    }
-}
-
-@media screen and (max-width: 960px){
-    .deckgrid[deckgrid]::before {
-        content: '3 .column.column-1-3';
-    }
-
-    .deckgrid .column-1-3 {
-        width: 30%;
-    	margin-right:2%;
-    }
-}
-
-@media screen and (max-width: 720px){
-    .deckgrid[deckgrid]::before {
-        content: '2 .column.column-1-2';
-    }
-
-    .deckgrid .column-1-2 {
-        width: 45%;
-    	margin-right:2%;
-    }
-}
-
-@media screen and (max-width: 480px){
-    .deckgrid[deckgrid]::before {
-        content: '1 .column.column-1-1';
-    }
-
-    .deckgrid .column-1-1 {
-        width: 100%;
-    }
-}
-
-
 /*                */
 
 .flappgrid {
@@ -301,3 +240,10 @@ input.scrollable-header {
         width: 100%!important;
     }
 }
+/*
+button.dropdown-toggle+ul.dropdown-menu { display: none!important; }
+button.dropdown-toggle.show+ul.dropdown-menu { display: block!important; }
+
+a.btn+ul.dropdown-menu { display: none!important; }
+a.btn.show+ul.dropdown-menu { display: block!important; }
+*/

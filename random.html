@@ -8,16 +8,19 @@
   <div class="container-fluid section section-break">      
       <div class="panel panel-default flappgrid" ng-repeat="fd in fdx" >
         <div class="panel-heading">
-          <h3 class="panel-title capitalize"><span ng-repeat="pdm in parent.mods" ng-show="pdm.id==fd.mod_id">{{pdm.name}}</span>  {{fd.name}}</h3>
+          <div class="btn-group pull-right">
+            <a class='btn' ng-click="fd.opened = !fd.opened">
+              <i class="fa fa-ellipsis-v"></i> 
+            </a>
+            <ul class="dropdown-menu" role="menu" ui-show="fd.opened">
+              <li ng-repeat="mod in mods"><a href="" class="capitalize" ng-click="fd.mod_id=mod.id; fd.opened=false; fd.toggled=true;">{{mod.name}}</a></li>
+            </ul>
+          </div>
+          <h3 class="panel-title capitalize" ng-class="{'bluish':fd.toggled}"><span>{{getMod(fd.mod_id)}}</span>  {{fd.name}}</h3>
         </div>
         <div class="panel-body capitalize">
             <div class="form-group">
-              <label for="fid{{card.id}}">Modify</label>
-              <select id="fid{{card.id}}" class="form-control capitalize" ng-model="fd.mod_id" ng-options="mod.id as mod.name for mod in mods" > </select>
-            </div>
-            <div class="form-group">
-              <label for="fcid{{card.id}}">Select</label>
-              <input type="checkbox" id="fcid{{card.id}}" class="form-control capitalize" ng-model="fd.toggled" > </select>
+              <ui-switch ng-model="fd.toggled"></ui-switch>
             </div>
         </div>
       </div>
@@ -26,7 +29,12 @@
   
   <div class="container-fluid section section-break">      
       <div class="form-group">
-      <a href="" class="btn btn-default" ng-click="addSelection()">Add Selected Foods</a>
+        <a href="" class="btn btn-primary" ng-click="addSelection()" popover="I appeared on mouse enter!" popover-trigger="mouseenter">Add Selected Combo</a>
+      </div>     
+      <div class="form-group">        
+        <ul class="dropdown-menu" role="menu" style="position: relative;z-index: 0">
+          <li ng-repeat="store in stores"><a href="" class="capitalize">{{store.name}}</a></li>
+        </ul>
       </div>
   </div>
   

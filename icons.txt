@@ -2332,6 +2332,20 @@ http://jtblin.github.io/angular-chart.js/
   </div>
 
 
+            <div class="form-group">
+                <div class="btn-group"><!-- TODO: add css class here -->
+                  <button type="button" 
+                    class="btn btn-default dropdown-toggle">
+                    Modify <span class="caret"></span>
+                  </button>
+                
+                  <ul class="dropdown-menu">
+                    <li ng-repeat="mod in mods"><a href="">{{mod.name}}</a></li>
+                  </ul>
+                </div>
+            </div>
+
+
   dataBank.Food.query(function(foods) {
   	dataBank.shuffleArray(foods);
   	var fdx = foods.splice(0,6);
@@ -2347,3 +2361,84 @@ http://jtblin.github.io/angular-chart.js/
 
 
       <a class="list-group-item" href="#/suggest">Suggest New Food <i class="fa fa-chevron-right pull-right"></i></a>
+
+
+              <input type="checkbox" id="fcid{{card.id}}" class="form-control capitalize" ng-model="fd.toggled" >
+
+button.dropdown-toggle+ul.dropdown-menu { display: none!important; }
+button.dropdown-toggle.show+ul.dropdown-menu { display: block!important; }
+
+            <div class="form-group">
+                <div class="btn-group">
+                  <button type="button" 
+                    class="btn btn-default dropdown-toggle">
+                    Action <span class="caret"></span>
+                  </button>
+                
+                  <ul class="dropdown-menu">
+                    <li ng-repeat="mod in mods"><a href="">{{mod.name}}</a></li>
+                  </ul>
+                </div>
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Begin modify.html -->
+<div ui-content-for="title">
+  <span>Combine Random Foods</span>
+</div>
+
+<div class="scrollable">
+<div class="scrollable-content">
+  
+  <div class="container-fluid section section-break">      
+      <div class="panel panel-default flappgrid" ng-repeat="fd in fdx" >
+        <div class="panel-heading">
+          <div class="btn-group pull-right">
+            <a class='btn' ng-click="fd.opened = !fd.opened">
+              <i class="fa fa-ellipsis-v"></i> 
+            </a>
+            <ul class="dropdown-menu" role="menu" ui-show="fd.opened">
+              <li ng-repeat="mod in mods"><a href="" class="capitalize" ng-click="fd.mod_id=mod.id; fd.opened=false">{{mod.name}}</a></li>
+            </ul>
+          </div>
+          <h3 class="panel-title capitalize"><span>{{getMod(fd.mod_id)}}</span>  {{fd.name}}</h3>
+        </div>
+        <div class="panel-body capitalize">
+            <div class="form-group">
+              <label for="fid{{fd.id}}">Modify</label>
+              <select id="fid{{fd.id}}" class="form-control capitalize" ng-model="fd.mod_id" ng-options="mod.id as mod.name for mod in mods" > </select>
+            </div>
+            <div class="form-group">
+              <label for="fcid{{fd.id}}">Select</label>
+              <ui-switch id="fcid{{fd.id}}" ng-model="fd.toggled"></ui-switch>
+            </div>
+        </div>
+      </div>
+      <br style="clear: both;">
+  </div>
+  
+  <div class="container-fluid section section-break">      
+      <div class="form-group">
+      <a href="" class="btn btn-default" ng-click="addSelection()">Add Selected Combo</a>
+      </div>
+  </div>
+  
+</div>
+</div>
+
+<div ui-content-for="modals">
+  <div ng-include="'addmodal.html'"></div>
+</div>
+<!-- End modify.html -->

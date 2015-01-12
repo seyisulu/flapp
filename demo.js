@@ -4,8 +4,9 @@ var app = angular.module('Flapp', [
   'ngResource',
   'mobile-angular-ui',
   'ngProgress',
-  'akoenig.deckgrid',
-  'mobile-angular-ui.components',
+  //'mobile-angular-ui.directives.toggle',
+  //'akoenig.deckgrid',
+  //'mobile-angular-ui.components',
   // touch/drag feature: this is from 'mobile-angular-ui.gestures.js'
   // to integrate gestures into default ui interactions like 
   // opening sidebars, turning switches on/off ..
@@ -43,7 +44,7 @@ app.run(function($rootScope, ngProgress) {
   });
 });
 
-app.controller('MainController', ['$rootScope', '$scope', 'dataBank', 'ngProgress',function($rootScope, $scope, dataBank, ngProgress){
+app.controller('MainController', ['$rootScope', '$scope', 'dataBank', 'ngProgress', '$filter',function($rootScope, $scope, dataBank, ngProgress, $filter){
   // User agent displayed in home page
   $scope.userAgent = navigator.userAgent;
   $scope.combos = dataBank.Combo.query();
@@ -60,6 +61,13 @@ app.controller('MainController', ['$rootScope', '$scope', 'dataBank', 'ngProgres
     window.location.hash='/random';
   };
   
+  $rootScope.$on('$routeChangeSuccess', function(args) {    
+    console.log(location.hash);
+    if(location.hash=='#/random') {
+    	$scope.randomFoods(6);
+    }
+  });
+  
   $scope.randomFoods = function(limit) {
   	limit=limit?limit:6;
   	dataBank.Food.query(function(foods){
@@ -67,7 +75,8 @@ app.controller('MainController', ['$rootScope', '$scope', 'dataBank', 'ngProgres
 	  	var fdx = foods.splice(0,limit);
 	  	for (i=0;i<limit;i++){
 	  		fdx[i]['toggled']=false;
-	  		fdx[i]['mod_id']=0;
+	  		fdx[i]['opened']=false;
+	  		fdx[i]['mod_id']=1;
 	  	}
 	  	$scope.fdx = fdx;
 	  });
@@ -78,23 +87,35 @@ app.controller('MainController', ['$rootScope', '$scope', 'dataBank', 'ngProgres
   };
   $scope.addSelected = function(yo){
   	yo['toggled']=false;
+  	yo['opened']=false;
+  	yo['mod_id']=1;
   	$scope.fdx.push(yo);
-  	console.log(yo);
   };
   $scope.addSelection = function(){
-  	var payload = { fid: [], mid: [] };
+  	var payload = { fid: [], mid: [], name: "", saved: false };
   	for(i=0,l=$scope.fdx.length;i<l;i++) {
   		if($scope.fdx[i].toggled==true) {
   			payload.fid.push($scope.fdx[i].id);
-  			payload.mid.push($scope.fdx[i].mod_id==undefined||$scope.fdx[i].mod_id=='?'?1:$scope.fdx[i].mod_id);
+  			payload.mid.push(isNaN(parseInt($scope.fdx[i].mod_id * 1))||parseInt($scope.fdx[i].mod_id * 1)==0?1:$scope.fdx[i].mod_id);
+  			var modText = $scope.getMod($scope.fdx[i].mod_id), foodText=$scope.fdx[i].name;
+  			payload.name+=payload.name==""?(modText+' '+foodText).trim():(', '+modText+' '+foodText).trim();  			
+  			$scope.fdx[i].mod_id=1;
   			$scope.fdx[i].toggled=false;
-  			var modText = $scope.fdx[i].mod_id, foodText=$scope.fdx[i].name;
-  			payload.txt=i==0?modText+' '+foodText:', '+modText+' '+foodText;
   		}
   	}
   	$scope.store=payload;
-  	$scope.stores.push(payload);
-  	console.log(payload);
+  	//$scope.stores.push(payload);
+    ngProgress.reset();
+    ngProgress.start();	
+    dataBank.Combo.save({},{ fids: payload.fid, mids: payload.mid }, function(dat){
+		$scope.stores.push(dat);
+    	ngProgress.stop();	
+	}, function(){
+    	ngProgress.stop();	
+	});
+  };    
+  $scope.modifyFood = function(foodIdx, modID) {
+    console.log('Food '+foodID+' and '+modID);
   };
 }]);
 //{ 'get':{method:'GET'},'save':{method:'POST'},'query':{method:'GET', isArray:true},'remove':{method:'DELETE'},'delete':{method:'DELETE'} };

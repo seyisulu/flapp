@@ -13,13 +13,14 @@
     <link rel="stylesheet" href="dist/css/mobile-angular-ui-base.min.css" />
     <link rel="stylesheet" href="dist/css/mobile-angular-ui-desktop.min.css" />
     <link rel="stylesheet" href="demo.css" />
-    <script src="dist/js/jquery-1.11.2.min.js"></script>
+    <!-- <script src="dist/js/jquery-1.11.2.min.js"></script> -->
     <script src="dist/js/angular-1.3.0/angular.min.js"></script>
     <script src="dist/js/angular-1.3.0/angular-route.min.js"></script>
     <script src="dist/js/angular-1.3.0/angular-resource.min.js"></script>
     <script src="dist/js/mobile-angular-ui.min.js"></script>
+    <!-- <script src="dist/js/mobile-angular-ui.components.min.js"></script> -->
     <script src="dist/js/ngProgress.min.js"></script>
-    <script src="dist/js/angular-deckgrid.min.js"></script>
+    <!-- <script src="dist/js/angular-deckgrid.min.js"></script> -->
     <!-- Required to use $swipe, $drag and Translate services -->
     <script src="dist/js/mobile-angular-ui.gestures.min.js"></script>
     <script src="demo.js?v=0.4"></script>
@@ -60,7 +61,7 @@
       <div class="navbar navbar-app navbar-absolute-bottom">
         <div class="btn-group justified">
           <a href="#/" class="btn btn-navbar"><i class="fa fa-home fa-navbar"></i> Home</a>
-          <a href="#/random" class="btn btn-navbar" ng-click="randomFoods()"><i class="fa fa-random fa-navbar"></i> Random</a>
+          <a href="#/random" class="btn btn-navbar" ng-click="randomFoods(6)"><i class="fa fa-random fa-navbar"></i> Random</a>
           <a href="" ui-turn-on="addmodal" class="btn btn-navbar"><i class="fa fa-plus fa-navbar"></i> Add</a>
         </div>
       </div>
