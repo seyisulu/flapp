@@ -37,7 +37,7 @@ class X{
 }
 require 'flight/Flight.php';
 
-Flight::register('db', 'PDO', array('mysql:dbname=flapp;host=127.0.0.1;charset=utf8','root',''), function($db){
+Flight::register('db', 'PDO', array('mysql:dbname=flapp;host=flapp.db.8403621.hostedresource.com;charset=utf8','flapp','condorV!king15'), function($db){
 	$db->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 	$db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 });
