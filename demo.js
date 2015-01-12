@@ -83,7 +83,7 @@ app.controller('MainController', ['$rootScope', '$scope', 'dataBank', 'ngProgres
   };
   $scope.getMod=function (dd){
   	var md = $filter('filter')($scope.mods, { id: dd }, true)[0];
-  	return md.name;
+  	return md?md.name:"";
   };
   $scope.addSelected = function(yo){
   	yo['toggled']=false;
@@ -104,14 +104,14 @@ app.controller('MainController', ['$rootScope', '$scope', 'dataBank', 'ngProgres
   		}
   	}
   	$scope.store=payload;
-  	//$scope.stores.push(payload);
+  	$scope.stores.push(payload);
     ngProgress.reset();
     ngProgress.start();	
     dataBank.Combo.save({},{ fids: payload.fid, mids: payload.mid }, function(dat){
-		$scope.stores.push(dat);
-    	ngProgress.stop();	
+		//$scope.stores.push(dat);
+    	//ngProgress.stop();	
 	}, function(){
-    	ngProgress.stop();	
+    	//ngProgress.stop();	
 	});
   };    
   $scope.modifyFood = function(foodIdx, modID) {

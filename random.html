@@ -1,5 +1,5 @@
 <div ui-content-for="title">
-  <span>Combine Random Foods</span>
+  <span>Combine</span>
 </div>
 
 <div class="scrollable">
@@ -16,7 +16,7 @@
               <li ng-repeat="mod in mods"><a href="" class="capitalize" ng-click="fd.mod_id=mod.id; fd.opened=false; fd.toggled=true;">{{mod.name}}</a></li>
             </ul>
           </div>
-          <h3 class="panel-title capitalize" ng-class="{'bluish':fd.toggled}"><span>{{getMod(fd.mod_id)}}</span>  {{fd.name}}</h3>
+          <h3 class="panel-title capitalize" ng-class="{'bluish':fd.toggled}">{{getMod(fd.mod_id)}} {{fd.name}}</h3>
         </div>
         <div class="panel-body capitalize">
             <div class="form-group">
