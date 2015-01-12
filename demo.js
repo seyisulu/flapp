@@ -4,25 +4,12 @@ var app = angular.module('Flapp', [
   'ngResource',
   'mobile-angular-ui',
   'ngProgress',
-  //'mobile-angular-ui.directives.toggle',
-  //'akoenig.deckgrid',
-  //'mobile-angular-ui.components',
-  // touch/drag feature: this is from 'mobile-angular-ui.gestures.js'
-  // to integrate gestures into default ui interactions like 
-  // opening sidebars, turning switches on/off ..
   'mobile-angular-ui.gestures'
 ]);
 
-// 
-// You can configure ngRoute as always, but to take advantage of SharedState location
-// feature (i.e. close sidebar on backbutton) you should setup 'reloadOnSearch: false' 
-// in order to avoid unwanted routing.
-// 
 app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
   $routeProvider.when('/',            {templateUrl: 'home.html', reloadOnSearch: false});  
-  $routeProvider.when('/add',         {templateUrl: 'add.html', reloadOnSearch: false});
   $routeProvider.when('/random',      {templateUrl: 'random.html', reloadOnSearch: false});
-  $routeProvider.when('/suggest',     {templateUrl: 'suggest.html', reloadOnSearch: false});   
 }]);
 
 app.value('config', {
@@ -45,7 +32,6 @@ app.run(function($rootScope, ngProgress) {
 });
 
 app.controller('MainController', ['$rootScope', '$scope', 'dataBank', 'ngProgress', '$filter',function($rootScope, $scope, dataBank, ngProgress, $filter){
-  // User agent displayed in home page
   $scope.userAgent = navigator.userAgent;
   $scope.combos = dataBank.Combo.query();
   $scope.foods = dataBank.Food.query();
@@ -105,18 +91,10 @@ app.controller('MainController', ['$rootScope', '$scope', 'dataBank', 'ngProgres
   	}
   	$scope.store=payload;
   	$scope.stores.push(payload);
-    ngProgress.reset();
-    ngProgress.start();	
     dataBank.Combo.save({},{ fids: payload.fid, mids: payload.mid }, function(dat){
-		//$scope.stores.push(dat);
-    	//ngProgress.stop();	
 	}, function(){
-    	//ngProgress.stop();	
 	});
   };    
-  $scope.modifyFood = function(foodIdx, modID) {
-    console.log('Food '+foodID+' and '+modID);
-  };
 }]);
 //{ 'get':{method:'GET'},'save':{method:'POST'},'query':{method:'GET', isArray:true},'remove':{method:'DELETE'},'delete':{method:'DELETE'} };
 app.factory('dataBank', ['$cacheFactory', '$resource', '$rootScope', 'config', '$q', function ($cacheFactory, $resource, $rootScope, config, $q) {
