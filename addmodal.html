@@ -1,0 +1,23 @@
+<div class="modal modal-overlay" ui-if='addmodal' ui-state='addmodal'>
+
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close" 
+                ui-turn-off="addmodal">&times;</button>
+        <h4 class="modal-title">Add Food</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Select</label>
+          <select class="form-control capitalize" ng-model="addedFood" ng-options="food as food.name for food in foods" > </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button ui-turn-off="addmodal" class="btn btn-default">Close</button>
+        <button ui-turn-off="addmodal" class="btn btn-primary" ng-click="addSelected(addedFood)">Add Selected</button>
+      </div>
+    </div>
+  </div>
+</div>
+

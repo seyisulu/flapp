@@ -5,6 +5,7 @@ var app = angular.module('Flapp', [
   'mobile-angular-ui',
   'ngProgress',
   'akoenig.deckgrid',
+  'mobile-angular-ui.components',
   // touch/drag feature: this is from 'mobile-angular-ui.gestures.js'
   // to integrate gestures into default ui interactions like 
   // opening sidebars, turning switches on/off ..
@@ -18,21 +19,10 @@ var app = angular.module('Flapp', [
 // 
 app.config(['$routeProvider', '$httpProvider', function($routeProvider, $httpProvider) {
   $routeProvider.when('/',            {templateUrl: 'home.html', reloadOnSearch: false});  
+  $routeProvider.when('/add',         {templateUrl: 'add.html', reloadOnSearch: false});
   $routeProvider.when('/random',      {templateUrl: 'random.html', reloadOnSearch: false});
-  $routeProvider.when('/suggest',     {templateUrl: 'suggest.html', reloadOnSearch: false});
-  /*
-  $httpProvider.defaults.transformRequest = function(data){
-        if (data === undefined) {
-            return data;
-        }
-        return $.param(data, false);
-   };
-   $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
-   */   
+  $routeProvider.when('/suggest',     {templateUrl: 'suggest.html', reloadOnSearch: false});   
 }]);
-// Prevent sending of JSON to server using jQuery's param format
-// Set the Content-Type header globally
-
 
 app.value('config', {
     basePath: '/api/v1/'
@@ -53,36 +43,58 @@ app.run(function($rootScope, ngProgress) {
   });
 });
 
-app.controller('MainController', ['$rootScope','$scope','dataBank',function($rootScope, $scope, dataBank){
+app.controller('MainController', ['$rootScope', '$scope', 'dataBank', 'ngProgress',function($rootScope, $scope, dataBank, ngProgress){
   // User agent displayed in home page
   $scope.userAgent = navigator.userAgent;
   $scope.combos = dataBank.Combo.query();
   $scope.foods = dataBank.Food.query();
-  $scope.mods = dataBank.Mod.query();
-  $scope.modx = dataBank.Mod.query();
-    $scope.md = new dataBank.Mod({name:' Deep Fried'});
-    $scope.md.$save();
-  $scope.saveMod = function() {
-    $scope.md = new dataBank.Mod({name:' Deep Fried'});
-    $scope.md.$save();
-  };
+  $scope.mods = dataBank.Mod.query(function(moddata){
+  	$scope.mods=moddata;
+  });  
+  $scope.fdx = [];//Shuffled and limited array
+  $scope.addedFdx={};
+  $scope.store={};
+  $scope.stores=[];
+  
   $scope.startApp = function() {
     window.location.hash='/random';
   };
-  //
-  // 'Forms' screen
-  //  
-  $scope.rememberMe = true;
-  $scope.email = 'me@example.com';  
-  $scope.login = function() {
-    alert('You submitted the login form');
+  
+  $scope.randomFoods = function(limit) {
+  	limit=limit?limit:6;
+  	dataBank.Food.query(function(foods){
+	  	dataBank.shuffleArray(foods);
+	  	var fdx = foods.splice(0,limit);
+	  	for (i=0;i<limit;i++){
+	  		fdx[i]['toggled']=false;
+	  		fdx[i]['mod_id']=0;
+	  	}
+	  	$scope.fdx = fdx;
+	  });
   };
-
-  $scope.deleteNotice = function(notice) {
-    var index = $scope.notices.indexOf(notice);
-    if (index > -1) {
-      $scope.notices.splice(index, 1);
-    }
+  $scope.getMod=function (dd){
+  	var md = $filter('filter')($scope.mods, { id: dd }, true)[0];
+  	return md.name;
+  };
+  $scope.addSelected = function(yo){
+  	yo['toggled']=false;
+  	$scope.fdx.push(yo);
+  	console.log(yo);
+  };
+  $scope.addSelection = function(){
+  	var payload = { fid: [], mid: [] };
+  	for(i=0,l=$scope.fdx.length;i<l;i++) {
+  		if($scope.fdx[i].toggled==true) {
+  			payload.fid.push($scope.fdx[i].id);
+  			payload.mid.push($scope.fdx[i].mod_id==undefined||$scope.fdx[i].mod_id=='?'?1:$scope.fdx[i].mod_id);
+  			$scope.fdx[i].toggled=false;
+  			var modText = $scope.fdx[i].mod_id, foodText=$scope.fdx[i].name;
+  			payload.txt=i==0?modText+' '+foodText:', '+modText+' '+foodText;
+  		}
+  	}
+  	$scope.store=payload;
+  	$scope.stores.push(payload);
+  	console.log(payload);
   };
 }]);
 //{ 'get':{method:'GET'},'save':{method:'POST'},'query':{method:'GET', isArray:true},'remove':{method:'DELETE'},'delete':{method:'DELETE'} };
@@ -107,6 +119,20 @@ app.factory('dataBank', ['$cacheFactory', '$resource', '$rootScope', 'config', '
 			get: { method:'GET', cache: $cacheFactory },
         	query: { method:'GET', cache: $cacheFactory, isArray:true },
         	save: { method:'POST' }
-		})
+		}),
+		// -> Fisher–Yates shuffle algorithm
+		shuffleArray: function(array) {
+		  var m = array.length, t, i;		
+		  // While there remain elements to shuffle
+		  while (m) {
+		    // Pick a remaining element…
+		    i = Math.floor(Math.random() * m--);		
+		    // And swap it with the current element.
+		    t = array[m];
+		    array[m] = array[i];
+		    array[i] = t;
+		  }		
+		  return array;
+		},
     };
 }]);

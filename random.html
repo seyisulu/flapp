@@ -4,37 +4,35 @@
 
 <div class="scrollable">
 <div class="scrollable-content">
-  <div class="container-fluid section section-break deckgrid" deckgrid source="foods">
-      
-      <div class="panel panel-default a-card" >
+  
+  <div class="container-fluid section section-break">      
+      <div class="panel panel-default flappgrid" ng-repeat="fd in fdx" >
         <div class="panel-heading">
-          <div class="btn-group pull-right">
-            <a ui-turn-on='myDropdown' class='btn'>
-              <i class="fa fa-ellipsis-v"></i>
-            </a>
-            <ul 
-              class="dropdown-menu"
-              ui-outer-click="Ui.turnOff('myDropdown')"
-              ui-outer-click-if="Ui.active('myDropdown')"
-              role="menu"
-              ui-show="myDropdown" 
-              ui-state="myDropdown"
-              ui-turn-off="myDropdown">
-
-              <li><a>Action</a></li>
-              <li><a>Another action</a></li>
-              <li><a>Something else here</a></li>
-              <li class="divider"></li>
-              <li><a>Separated link</a></li>
-            </ul>
-          </div>
-          <h3 class="panel-title capitalize">{{card.name}}</h3>
+          <h3 class="panel-title capitalize"><span ng-repeat="pdm in parent.mods" ng-show="pdm.id==fd.mod_id">{{pdm.name}}</span>  {{fd.name}}</h3>
         </div>
         <div class="panel-body capitalize">
-           {{card.name}}
+            <div class="form-group">
+              <label for="fid{{card.id}}">Modify</label>
+              <select id="fid{{card.id}}" class="form-control capitalize" ng-model="fd.mod_id" ng-options="mod.id as mod.name for mod in mods" > </select>
+            </div>
+            <div class="form-group">
+              <label for="fcid{{card.id}}">Select</label>
+              <input type="checkbox" id="fcid{{card.id}}" class="form-control capitalize" ng-model="fd.toggled" > </select>
+            </div>
         </div>
       </div>
-
+      <br style="clear: both;">
   </div>
+  
+  <div class="container-fluid section section-break">      
+      <div class="form-group">
+      <a href="" class="btn btn-default" ng-click="addSelection()">Add Selected Foods</a>
+      </div>
+  </div>
+  
 </div>
+</div>
+
+<div ui-content-for="modals">
+  <div ng-include="'addmodal.html'"></div>
 </div>

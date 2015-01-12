@@ -206,7 +206,7 @@ input.scrollable-header {
 
 .deckgrid[deckgrid]::before {
     /* Specifies that the grid should have a maximum of 4 columns. Each column will have the classes 'column' and 'column-1-4' */
-    content: '3 .column.column-1-3';
+    content: '5 .column.column-1-5';
     font-size: 0; /* See https://github.com/akoenig/angular-deckgrid/issues/14#issuecomment-35728861 */
     visibility: hidden;
 }
@@ -215,9 +215,42 @@ input.scrollable-header {
     float: left;
 }
 
-.deckgrid .column-1-3 {
-    width: 30%;
+.deckgrid .column-1-5 {
+    width: 17%;
     margin-right:2%;
+}
+
+@media screen and (max-width: 1280px){
+    .deckgrid[deckgrid]::before {
+        content: '4 .column.column-1-4';
+    }
+
+    .deckgrid .column-1-4 {
+        width: 22%;
+    	margin-right:2%;
+    }
+}
+
+@media screen and (max-width: 960px){
+    .deckgrid[deckgrid]::before {
+        content: '3 .column.column-1-3';
+    }
+
+    .deckgrid .column-1-3 {
+        width: 30%;
+    	margin-right:2%;
+    }
+}
+
+@media screen and (max-width: 720px){
+    .deckgrid[deckgrid]::before {
+        content: '2 .column.column-1-2';
+    }
+
+    .deckgrid .column-1-2 {
+        width: 45%;
+    	margin-right:2%;
+    }
 }
 
 @media screen and (max-width: 480px){
@@ -227,5 +260,44 @@ input.scrollable-header {
 
     .deckgrid .column-1-1 {
         width: 100%;
+    }
+}
+
+
+/*                */
+
+.flappgrid {
+    float: left;
+}
+
+.flappgrid {
+    width: 17%;
+    margin-right:2%;
+}
+
+@media screen and (max-width: 1280px){
+    .flappgrid {
+        width: 22%;
+    	margin-right:2%;
+    }
+}
+
+@media screen and (max-width: 960px){
+    .flappgrid {
+        width: 30%;
+    	margin-right:2%;
+    }
+}
+
+@media screen and (max-width: 720px){
+    .flappgrid {
+        width: 45%;
+    	margin-right:2%;
+    }
+}
+
+@media screen and (max-width: 480px){
+    .flappgrid {
+        width: 100%!important;
     }
 }

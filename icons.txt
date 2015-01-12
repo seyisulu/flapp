@@ -2164,7 +2164,39 @@ To make it work you have to overwrite the existing headers by doing this
     </div>
 
 
+ui-turn-on='myDropdown' 
 
+  dataBank.Food.query(function(foods){
+  	dataBank.shuffleArray(foods);
+  	$scope.fdx = foods.splice(0,6);
+  	console.log(foods);
+  });
+
+
+
+
+
+
+
+<div class="form-group">
+      <select class="form-control capitalize" ng-model="addedFdx" ng-options="food as food.name for food in foods" ng-selected="fdxSelected"> </select>
+      </div>
+      <div class="form-group">
+      <a href="" class="btn btn-default form-control" ng-click="fdxSelect(addedFdx)">Add Selected Food</a>
+      </div>
+      <div class="form-group">
+          {{addedFdx}}
+      </div>
+      <div class="form-group">        
+          <div class="panel panel-default" >
+            <div class="panel-heading">          
+              <h3 class="panel-title capitalize">{{addedFdx.name}}</h3>
+            </div>
+            <div class="panel-body capitalize">
+               {{addedFdx}}
+            </div>
+          </div>
+      </div>
 
 
 
@@ -2193,6 +2225,16 @@ angular.module("app").factory("SaveCustomer", ["$resource",
 
 
 
+      <div masonry column-width="200" load-images="false">
+      
+        <div class="masonry-brick" ng-repeat="food in foods">
+            <h3 class="capitalize">{{food.name}}</h3>
+            <div class="capitalize">
+               {{food.name}}
+            </div>
+        </div>
+      
+      </div>
 
 
 
@@ -2224,3 +2266,84 @@ angular.module("app").factory("SaveCustomer", ["$resource",
            {{food.name}}
         </div>
       </div>
+
+
+
+
+
+http://jtblin.github.io/angular-chart.js/
+
+
+    $scope.md = new dataBank.Mod({name:' Deep Fried'});
+    $scope.md.$save();
+  $scope.saveMod = function() {
+    $scope.md = new dataBank.Mod({name:' Deep Fried'});
+    $scope.md.$save();
+  };
+
+
+  	var rv="";
+  	if(dd == undefined || $scope.mod == undefined) {
+
+  	} else {
+  		for(i=0,l=$scope.mod.length;i<l;i++){
+  			if($scope.mod[i].id==dd){
+  				rv = $scope.mod[i].name;
+  				console.log($scope.mod[i].name)
+  				break;
+  			}
+  		}
+  	}
+
+
+
+
+
+
+  <div class="container-fluid section section-break deckgrid" deckgrid source="fdx">
+      
+      <div class="panel panel-default a-card" >
+        <div class="panel-heading">
+          <div class="btn-group pull-right">
+            <a ui-turn-on='{{card.id}}' class='btn'>
+              <i class="fa fa-ellipsis-v"></i> 
+            </a>
+            <ul 
+              class="dropdown-menu"
+              ui-outer-click="Ui.turnOff('{{card.id}}')"
+              ui-outer-click-if="Ui.active('{{card.id}}')"
+              role="menu"
+              ui-show="{{card.id}}" 
+              ui-state="{{card.id}}"
+              ui-turn-off="{{card.id}}">
+              <li><a>A</a></li>
+            </ul>
+          </div>
+          <h3 class="panel-title capitalize">{{card.mod[card.mod_id].name}} {{card.name}}</h3>
+        </div>
+        <div class="panel-body capitalize">
+            <div class="form-group">
+              <label for="fid{{card.id}}">Modify</label>
+              <select id="fid{{card.id}}" class="form-control capitalize" ng-model="card.mod_id" ng-options="mod.id as mod.name for mod in card.mods" > </select>
+            </div>
+        </div>
+      </div>
+
+  </div>
+
+
+  dataBank.Food.query(function(foods) {
+  	dataBank.shuffleArray(foods);
+  	var fdx = foods.splice(0,6);
+  	for (i=0;i<6;i++){
+  		fdx[i]['toggled']=false;
+  		fdx[i]['mod_id']=0;
+  	}
+  	$scope.fdx = fdx;
+  	console.log($scope.mods);
+  });
+
+
+
+
+      <a class="list-group-item" href="#/suggest">Suggest New Food <i class="fa fa-chevron-right pull-right"></i></a>
